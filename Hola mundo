@@ -1,0 +1,19 @@
+#include "staffs.h"
+
+#include <iostream>
+
+#include "conio.h"
+
+using namespace std;
+
+
+int main()
+
+{
+
+	cout<<"hola mundo\n";
+  cout<<"soy Juan Villafuerte\n";
+	getch();
+  return 0;
+}
+
