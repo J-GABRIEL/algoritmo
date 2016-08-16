@@ -1,0 +1,18 @@
+#include "stdafx.h"
+#include "conio.h"
+#include <iostream>
+using namespace std;
+void main()
+{
+ system("color f0");
+	float a,b,c,d;
+ cout<<"introdusca capital:";
+	 cin>>a;
+cout<<"introdusca interes:";
+	 cin>>b;
+	cout<<"dias trabajados";
+	cin>>c;
+	d=(a*b*c)/360;
+	cout<<"el interes simple:"<<d;
+	 getch ();
+}
