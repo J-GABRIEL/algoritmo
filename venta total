@@ -4,7 +4,8 @@
 using namespace std;
 void main()
 {
-	int acum=0,c,a,b,n;
+	int c,a,n;
+	float b,acum=0;
 	cout<<"introdusca la cantidad de elementos:";
 	cin>>n;
 	for(int i=1;i<=n;i++)
