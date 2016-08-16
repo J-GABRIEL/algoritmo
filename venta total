@@ -1,0 +1,22 @@
+#include "stdafx.h"
+#include "conio.h"
+#include <iostream>
+using namespace std;
+void main()
+{
+	int acum=0,c,a,b,n;
+	cout<<"introdusca la cantidad de elementos:";
+	cin>>n;
+	for(int i=1;i<=n;i++)
+	{
+	   
+		cout<<"introdusca elemento: ";
+		cin>>a;
+		cout<<"introdusca precio:";
+		cin>>b;
+		c=a*b;
+		acum=acum+c;
+	}
+	cout<<"la venta total es :"<<acum;
+	getch();
+}
