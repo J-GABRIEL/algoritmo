@@ -5,9 +5,9 @@ using namespace std;
 void main()
 {
  float a,b,c,d,e,f,x,y;
- cout<<"introdusca a:";
+         cout<<"introdusca a:";
 	 cin>>a;
-cout<<"introdusca b:";
+         cout<<"introdusca b:";
 	 cin>>b;
 	 cout<<"introdusca c:";
 	 cin>>c;
@@ -15,7 +15,7 @@ cout<<"introdusca b:";
 	 cin>>d;
 	 cout<<"introdusca e:";
 	 cin>>e;
-cout<<"introdusca f:";
+         cout<<"introdusca f:";
 	 cin>>f;
 	 y=(a*f-c*d)/(a*e-b*d);
 	 x=(f-e*y)/d;
