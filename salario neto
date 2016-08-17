@@ -1,0 +1,32 @@
+#include "stdafx.h"
+#include "conio.h"
+#include <iostream>
+using namespace std;
+void main()
+{
+	system("color f0");
+	int n;
+float a,b,c;
+	cout<<" introdusca la cantidad de empleados:";
+	cin>>n;
+	for(int i=1;i<=n;i++)
+	{
+	 cout<<"introdusca salario:";
+	 cin>>a;
+	 if(a>1805)
+		{
+	    cout<<"introducir descuento:";
+        cin>>b;
+
+		c=a-(a*(b/100));
+	    cout<<"el salario de dicho empleado es :"<<c<<endl; 
+	
+	}
+	else
+	{
+      cout<<"no aceptable"<<endl;
+	
+	 }
+	}
+    getch();
+}
