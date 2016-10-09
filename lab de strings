@@ -1,0 +1,109 @@
+#include "stdafx.h"
+#include "conio.h"
+#include <iostream>
+#include <string>
+#define MAX 20
+using namespace std;
+struct prueba
+{
+string nombre;
+};
+void cargar(prueba mat[MAX][MAX],int n);
+void mostar(prueba mat[MAX][MAX],int n);
+void clasificar(prueba mat[MAX][MAX],int n);
+	
+void main()
+{
+	int n,opcion;
+    prueba name[MAX][MAX];
+    do{
+		cout<<"\t\t menu"<<endl;
+		cout<<"\t 1.cargar"<<endl;
+		cout<<"\t 2.mostrar"<<endl;
+		cout<<"\t 3.strins formados"<<endl;
+		cout<<"\t 0.salir"<<endl;
+		cout<<"\t opcion:";
+		cin>>opcion;
+		system("cls");
+		switch(opcion)
+		{
+		case 1:
+			do{
+	        cout<<"\t\n ingrese tamano n*n:";
+	        cin>>n;	 
+	        }while((n<0)||(n%2==0)||(n>MAX));
+			cargar(name,n);
+			break;
+		case 2:
+			mostar(name,n);
+			break;
+		case 3: 
+			clasificar(name,n);
+			break;
+		case 0:
+			cout<<"\t\n saliendo del programa";
+			break;
+		default:
+			cout<<"\t\n opcion invalida ";
+			break;
+		}
+		getch();
+		system("cls");
+	}while(opcion!=0);
+			
+	getch();
+}
+void cargar(prueba mat[MAX][MAX],int n)
+{
+int i,j;
+string a;
+cin.ignore();
+for(i=0;i<n;i++)
+   {
+	for(j=0;j<n;j++)
+	{
+   cout<<"\t mat["<<i<<"]["<<j<<"] :";
+   getline(cin,a);
+   mat[i][j].nombre=a;
+	}
+   }
+}
+void mostar(prueba mat[MAX][MAX],int n)
+{
+int i,j;
+for(i=0;i<n;i++)
+  {
+	for(j=0;j<n;j++)
+	{
+      cout<<mat[i][j].nombre<<" ";
+	}cout<<endl;
+  }cout<<endl;
+}
+void clasificar(prueba mat[MAX][MAX],int n)
+{
+	int i,j;
+	string aux,xua,axu,xue;
+for(i=0;i<n;i++){
+	for(j=0;j<n;j++){
+		if(i==j){
+	     aux=aux+mat[i][j].nombre;
+		}
+		if(j==((n-1)/2))
+		{
+			xua=xua+mat[i][j].nombre;
+		}
+		if(i==((n-1)/2))
+		{
+			axu=axu+mat[i][j].nombre;
+		}
+		if(i+j==n-1)
+		{
+        xue=xue+mat[j][i].nombre;
+		}
+	}
+}
+cout<<"\t\n string 1: "<<aux<<endl;
+cout<<"\t\n string 2: "<<xua<<endl;
+cout<<"\t\n string 3: "<<axu<<endl;
+cout<<"\t\n string 4: "<<xue<<endl;
+}
