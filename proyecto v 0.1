@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "conio.h"
+#include <stdio.h>
 #include <string>
 #include <iostream>
 #include <stdlib.h>
@@ -11,26 +12,25 @@ struct instrumento{
 	string marca;
 	int cantidad;
 	string lugar;
+	char estado;
 };
-
 struct partituras{
    int codigo;
    string nom;
    string autor;
+   char estado;
 };
 struct usuario{
 string usuarios;
 string contra;
 };
-
-void crearArchivo(char nomArch[15])
+void crearArchivo(char nomArch[])
 {
 	FILE *ptr;
-	ptr= fopen("inventario.dat", "wb");
+	ptr= fopen(nomArch, "wb");
 	fclose(ptr);
 }
-
-void solicitarDatos(instrumento reg) 
+void solicitarDatos(instrumento &reg) 
 {	
 	
 	cout<<endl<< "Introducir Nombre:";
@@ -45,7 +45,7 @@ void solicitarDatos(instrumento reg)
 	}while(reg.descripcion.length() == 0);
 	cout<<"marca:";	
 	do{
-		getline(cin, reg.marca);
+		getline(cin,reg.marca);
 	}while(reg.marca.length() == 0);
 
 	cout<<"cantidad:";
@@ -58,28 +58,26 @@ void solicitarDatos(instrumento reg)
      system("cls");
 
 }
-
-void mostrarRegistro(instrumento reg, int nroReg)
+void mostrarRegistro(instrumento &reg, int nroReg)
 {
 	cout<<endl<< nroReg<<".-"<< reg.nombre<< "         "<<reg.codigo<< "    "<< reg.descripcion<<"   "<<reg.marca<<"   "<<reg.cantidad<<"    "<<reg.lugar;
 }
-
-void adicionarRegistro(char nomArch[15])
+void adicionarRegistro()
 {
 	FILE *ptr;
 	instrumento reg;
-	ptr= fopen(nomArch, "ab"); 
 	solicitarDatos(reg);
-	fwrite(&reg, sizeof(struct instrumento),1,ptr);
+	reg.estado='A';
+	ptr= fopen("instrumento.dat", "ab"); 
+	fwrite(&reg, sizeof(reg),1,ptr);
 	fclose(ptr);
 }
-
-void listarArchivo(char nomArch[15])
+void listarArchivo()
 {
 	FILE *ptr;
 	instrumento reg;
 	int cont=0;
-	ptr= fopen(nomArch,"rb");
+	ptr= fopen("instrumento.dat","rb");
 	if(ptr == NULL)
 	{
 		cout<< "EL archivo no existe...";
@@ -87,48 +85,55 @@ void listarArchivo(char nomArch[15])
 	else
 	{
 		cout<<endl<<"   ** LISTADO DE INSTRUMENTOS **";
-		cout<<endl<<" Nombre      codigo      descripcion      marca   cantidad     lugar";
-		cout<<endl<<"----------------------------";
-		fread(&reg, sizeof(struct instrumento),1,ptr);
+		cout<<endl<<" n   Nombre      codigo      descripcion      marca    cantidad     lugar";
+		cout<<endl<<"---------------------------------------------------------------------------";
+		fread(&reg, sizeof(reg),1,ptr);
 		while(!feof(ptr))
 		{
-			if("inventario.dat" == 0)
+			if(reg.estado=='A')
 			{
 				mostrarRegistro(reg,cont+1);
 			}
-			fread(&reg, sizeof(struct instrumento),1,ptr);
+			fread(&reg, sizeof(reg),1,ptr);
 			cont++;
 		}
 		fclose(ptr);
-	}cout<<endl;
+	}
 }
-void instru(instrumento reg)
+void menuistrumento()
 {
 	int opcion;
 	
 	do{
 	cout<<"\t\t INVENTARIO DE INSTRUMENTOS DE ORQUESTA"<<endl;
-	cout<<"\t 1.Adicionar"<<endl;
-	cout<<"\t 2.Buscar"<<endl;
-	cout<<"\t 3.listar"<<endl;
-	cout<<"\t 4.modificar"<<endl;
-	cout<<"\t 5.Eliminar"<<endl;
-	cout<<"\t 6.volver a menu"<<endl;
+	cout<<"\t 1.Crear archivo"<<endl;
+	cout<<"\t 2.Adicionar instrumento"<<endl;
+	cout<<"\t 3.Buscar instrumento"<<endl;
+	cout<<"\t 4.mostrar lista de instrumento"<<endl;
+	cout<<"\t 5.modificar instrumento"<<endl;
+	cout<<"\t 6.Eliminar instrumento"<<endl;
+	cout<<"\t 7.volver a menu"<<endl;
 	cout<<"\t 0.Salir"<<endl;
 	cout<<"\t opcion: ";
 	cin>>opcion;
+	system("cls");
 	switch(opcion)
 	{
 	case 1:
-		cout<<"\t ingrese datos";
-		adicionarRegistro("inventario.dat");
+		crearArchivo("instrumento.dat");
+		cout<<"--EL ARCHIVO FUE CREADO--";
+
 		break;
 	case 2:
+		cout<<"Ingrese datos";
+		listarArchivo();
+		adicionarRegistro();
 		break;
 	case 3:
-		listarArchivo("inventario.dat");
+		
 		break;
 	case 4:
+		listarArchivo();
 		break;
 	case 5:
 		break;
@@ -144,9 +149,8 @@ void instru(instrumento reg)
 	}while(opcion!=0);
 
 }
-void datos(partituras dat) 
+void datospartidura(partituras &dat) 
 {	
-	
 	cout<<endl<< "Nombre:";
 	do{
 		getline(cin,dat.nom);
@@ -157,87 +161,90 @@ void datos(partituras dat)
 	do{
 		getline(cin, dat.autor);
 	}while(dat.autor.length() == 0);
-
-	
 }
-void Registro(partituras dat, int nroReg)
+void Registro(partituras &dat, int nroReg)
 {
-	cout<<endl<<"   "<<nroReg<<".-"<< dat.nom<< "         "<<dat.codigo<< "    "<< dat.autor;
+	cout<<endl<<nroReg<<"\t"<<dat.nom<<"\t"<<dat.codigo<<"\t   "<<dat.autor<<endl;
 }
-void adicionar(char Arch[15])
+void adicionarpartiduras()
 {
 	FILE *ptr;
 	partituras dat;
-	ptr= fopen(Arch, "ab"); 
-	datos(dat);
-	fwrite(&dat, sizeof(struct partituras),1,ptr);
+	datospartidura(dat);
+	dat.estado='A';
+	ptr= fopen("partidura.dat","ab");
+	fwrite(&dat, sizeof(dat),1,ptr);
 	fclose(ptr);
 }
-
-void listar(char Arch[15])
+void listar()
 {
 	FILE *ptr;
 	partituras dat;
 	int cont=0;
-	ptr= fopen(Arch,"rb");
+	ptr= fopen("partidura.dat","rb");
 	if(ptr == NULL)
 	{
 		cout<< "EL archivo no existe...";
 	}
 	else
 	{
-		cout<<endl<<"   ** LISTADO DE INSTRUMENTOS **";
-		cout<<endl<<" Nombre      codigo      autor";
-		cout<<endl<<"----------------------------";
-		fread(&dat, sizeof(struct partituras),1,ptr);
+		cout<<endl<<"   ** LISTADO DE PARTITURAS **";
+		cout<<endl<<" n    Nombre      codigo      autor";
+		cout<<endl<<"---------------------------------";
+		fread(&dat, sizeof(dat),1,ptr);
 		while(!feof(ptr))
 		{
-			if("inventario.dat" == 0)
+			if(dat.estado=='A')
 			{
 				Registro(dat,cont+1);
 			}
-			fread(&dat, sizeof(struct partituras),1,ptr);
+			fread(&dat, sizeof(dat),1,ptr);
 			cont++;
 		}
 		fclose(ptr);
 	}
-	cout<<endl;
-	getch();
 }
-
-
-void part(partituras dat)
+void menupartiduras()
 {
-	int opcion;
-	
+	int opcion,n;
 	do{
 	cout<<"\t\t PARTIDURAS"<<endl;
-	cout<<"\t 1.Adicionar"<<endl;
-	cout<<"\t 2.Buscar"<<endl;
-	cout<<"\t 3.listar"<<endl;
-	cout<<"\t 4.modificar"<<endl;
-	cout<<"\t 5.Eliminar"<<endl;
-	cout<<"\t 6.volver a menu"<<endl;
+	cout<<"\t 1.Crear archivo"<<endl;
+	cout<<"\t 2.Adicionar partidura"<<endl;
+	cout<<"\t 3.Buscar partidura"<<endl;
+	cout<<"\t 4.Mostrar listar de partiduras"<<endl;
+	cout<<"\t 5.Modificar partidura"<<endl;
+	cout<<"\t 6.Eliminar partidura"<<endl;
+	cout<<"\t 7.volver a menu"<<endl;
 	cout<<"\t 0.Salir"<<endl;
 	cout<<"\t opcion:";
 	cin>>opcion;
+	system("cls");
 	switch(opcion)
 	{
 	case 1:
-		cout<<"\t ingrese datos";
-		datos(dat);
+		crearArchivo("partidura.dat");
+		cout<<"--El archivo fue creado--"<<endl;
+		system("pause");
+		system("cls");
 		break;
 	case 2:
-
+		cout<<"\t INGRESE DATOS :)";
+		listar();
+		adicionarpartiduras();
 		break;
 	case 3:
-	listar("inventario.dat");
 		break;
 	case 4:
+	    listar();
+		system("pause");
+		system("cls");
 		break;
 	case 5:
 		break;
 	case 6:
+		break;
+	case 7:
 		break;
 	case 0:
 		cout<<"\t saliendo del programa";
@@ -253,10 +260,6 @@ void part(partituras dat)
 void main()
 {
 	int opcion;
-	FILE *ptr;
-	instrumento reg;
-	partituras dat;
-	ptr= fopen("inventario.dat", "wb");
 	do{
 	cout<<"\t\t ****MENU*****"<<endl;
 	cout<<"\t 1.INSTRUMENTO"<<endl;
@@ -265,16 +268,17 @@ void main()
 	cout<<"\t 0.salir del programa"<<endl;
 	cout<<"\t opcion:";
 	cin>>opcion;
+	system("cls");
 	switch(opcion)
 	{
 	case 1:
-		instru(reg);
+		menuistrumento();
 		break;
 	case 2:
-		part(dat);
+		menupartiduras();
 		break;
 	case 3:
-		//usuario(reg);
+		//menu usuario();
 		break;
 	case 0:
 		cout<<"\t saliendo del programa";
@@ -284,9 +288,5 @@ void main()
 		break;
 	}
 	}while(opcion!=0);
-fclose(ptr);
-
-	getch();
-
+   getch();
 }
-
