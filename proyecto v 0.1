@@ -7,6 +7,10 @@
 #define USSER "mio"
 #define PASS "hola"
 using namespace std;
+struct ID{
+	string usuario;
+	string password;
+};
 
 struct instrumento{
 	string nombre;
@@ -185,10 +189,16 @@ void instrumento()
 void ALTA_DIRECTA()
 {
   int codigo;
-  ptr=fopen("inventario.dat","ab+");
+  ptr=fopen("inventario.dat","w");
  cout<<"ingrese codigo:";
+ do{
  cin>>codigo;
- dir_fisica=codigo*sizeof(registro);
+ if(codigo<0)
+	 cout<<"es invalido ingrese nuevamente:"<<endl;
+ }while(codigo<0);
+
+
+dir_fisica=codigo*sizeof(registro);
  fseek(ptr,dir_fisica,SEEK_SET); 
  fread(&registro,sizeof(registro),1,ptr);
   if(registro.codigo==codigo)
@@ -209,14 +219,22 @@ do{
 	do{
 		getline(cin,registro.marca);
    }while(registro.marca.length() == 0);
+
+
 	cout<<"cantidad:";
+
+	do{
 	cin>>registro.cantidad;
+
+	if(registro.cantidad<0);
+	cout<<"es invalido ingrese nuevamente la cantidad:"<<endl;
+	}while(registro.cantidad<0);
 	cout<<"lugar:";
 	do{
 		getline(cin, registro.lugar);
 	}while(registro.lugar.length() == 0);
 	registro.codigo=codigo;
-	registro.estado=='A';
+	registro.estado='A';
     fwrite(&registro,sizeof(registro),1,ptr); // Grabar el Registro completo
     fclose(ptr); // Cierra el archivo
 	cout << "\n\r<<< Oprima cualquier tecla para continuar >>>"<<endl;
@@ -272,7 +290,7 @@ void LISTADO_SECUENCIAL()
   cout<<"\n\r----------------------------------------------------------------------------------------";
   while((fread(&registro,sizeof(registro),1,ptr))==1)
   {
-    if(registro.estado=='A'){
+    if(registro.estado='A'){
 		cout<<endl<<"   "<<registro.nombre<<"   "<<registro.codigo<<"    "<<registro.descripcion<<"    "<<registro.marca<<"    "<<registro.cantidad<<"    "<<registro.lugar;
 	}
 	else
@@ -293,7 +311,7 @@ void MODIFICACION_DIRECTA()
 {
   int codigo;
   cout << "\n\rMODIFICACION DE REGISTROS DE PRODUCTOS";
-  ptr=fopen("inventario.dat","rb+"); // Intenta abrir el archivo PRODUCTO.DIR
+  ptr=fopen("inventario.dat","w+"); // Intenta abrir el archivo PRODUCTO.DIR
 			     // en modo de lectura/escritura
   if(ptr==NULL)  // Valida la existencia del archivo
   {
@@ -308,7 +326,7 @@ void MODIFICACION_DIRECTA()
   dir_fisica=codigo*sizeof(registro); // Calculo de la dir. fisica
   fseek(ptr,dir_fisica,SEEK_SET); //Posicionar el apuntador del archivo
   fread(&registro,sizeof(registro),1,ptr);
-    if((registro.codigo==codigo)&&(registro.estado=='A'))
+    if((registro.codigo==codigo)&&(registro.estado='A'))
   {
       cout << "\n\rNOMBRE            CODIGO        DESCRIPCION         MARCA        CANTIDAD              LUGAR           ESTADO";
       cout << "\n\r-------------------------------------------------------------------------------------------------------------------------------";
@@ -373,7 +391,7 @@ void BAJA_LOGICA_DIRECTA(void)
   fseek(ptr,dir_fisica,SEEK_SET); //Posicionar el apuntador del archivo
   fread(&registro,sizeof(registro),1,ptr);
      // Lee el "Registro", de tamano=sizeof(Registro) del archivo "alias"
-  if((registro.codigo==codigo)&&(registro.estado=='A'))
+  if((registro.codigo==codigo)&&(registro.estado='A'))
   {
         cout<<endl<<"   ** LISTADO DE INSTRUMENTOS **";
 		cout<<endl<<" N   Nombre      codigo      descripcion      marca    cantidad     lugar";
@@ -405,7 +423,12 @@ void datospartidura()
 		getline(cin,dat.nom);
 	}while(dat.nom.length() == 0);
 	cout<< "codigo:";
+	do{
 	cin>> codigo;
+	if(codigo<0)
+		cout<<"es invalido ingrese nuevamente el codigo:"<<endl;
+	}while(codigo<0);
+
 	 if(dat.codigo==codigo)
   {
        cout << "\n\n\n\rRegistro duplicado !!!";
@@ -427,8 +450,8 @@ void adicionarpartiduras()
 {
 	FILE *ptr;
 	datospartidura();
-	dat.estado=='A';
-	ptr= fopen("partitura.dat","b+r");
+	dat.estado='A';
+	ptr= fopen("partitura.dat","w");
 	fwrite(&dat, sizeof(dat),1,ptr);
 	fclose(ptr);
 }
@@ -446,7 +469,7 @@ void listar()
 		cout<<endl<<"-----------------------------------------";
 		while((fread(&dat,sizeof(dat),1,ptr))==1)
 		{
-			if(dat.estado=='A')
+			if(dat.estado='A')
 			{
 				Registro();
 			}
@@ -472,7 +495,7 @@ void buscarpartitura()
 		fisica=codigo*sizeof(dat);
 		fseek(ptr,fisica,SEEK_SET);
 		fread(&dat,sizeof(dat),1,ptr);
-		if((dat.estado=='A')&&(dat.codigo==codigo)){
+		if((dat.estado='A')&&(dat.codigo==codigo)){
 		cout<<endl<<"   ** LISTADO DE PARTITURAS **";
 		cout<<endl<<"    Nombre      codigo         autor";
 		cout<<endl<<"-----------------------------------------";
@@ -487,7 +510,7 @@ void modificarpartitura()
 {
 	int codigo;
 	char resp;
-	ptr=fopen("partitura.dat","r+b");
+	ptr=fopen("partitura.dat","w+");
 	if(ptr== NULL)
 	{
 		cout<< "El archivo no existe...";
@@ -500,7 +523,7 @@ void modificarpartitura()
 		fseek(ptr,fisica,SEEK_SET);
 		fread(&dat,sizeof(dat),1,ptr);
 		{
-			if((dat.estado=='A')&&(dat.codigo==codigo))
+			if((dat.estado='A')&&(dat.codigo==codigo))
 			{
 		cout<<endl<<"   ** LISTADO DE PARTITURAS **";
 		cout<<endl<<"N      Nombre      codigo         autor";
@@ -546,7 +569,7 @@ void eliminarpartitura()
 		 fisica=codigo*sizeof(dat);
 		fseek(ptr,fisica,SEEK_SET);
 		fread(&dat,sizeof(dat),1,ptr);
-	if((dat.estado=='A')&&(dat.codigo==codigo))
+	if((dat.estado='A')&&(dat.codigo==codigo))
 			{
 		cout<<endl<<"   ** LISTADO DE PARTITURAS **";
 		cout<<endl<<"N      Nombre      codigo         autor";
@@ -636,3 +659,4 @@ void menupartiduras()
 	getch();
 
 }
+		 
