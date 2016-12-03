@@ -1,9 +1,13 @@
+#include "stdafx.h"
 #include "conio.h"
 #include <stdio.h>
 #include <string>
 #include <iostream>
 #include <stdlib.h>
+#define USSER "mio"
+#define PASS "hola"
 using namespace std;
+
 struct instrumento{
 	string nombre;
 	int codigo;
@@ -13,221 +17,131 @@ struct instrumento{
 	string lugar;
 	char estado;
 };
+
+struct instrumento registro;
+
+long int dir_fisica;
+
 struct partituras{
    int codigo;
    string nom;
    string autor;
    char estado;
 };
-struct usuario{
-string usuarios;
-string contra;
-};
-void crearArchivo(char nomArch[])
-{
-	FILE *ptr;
-	ptr= fopen(nomArch, "wb");
-	fclose(ptr);
-}
-void solicitarDatos(instrumento &reg) 
-{	
-	cout<<endl<< "Introducir Nombre:";
-	do{
-		getline(cin,reg.nombre);
-	}while(reg.nombre.length() == 0);
-	cout<< "codigo:";
-	cin>> reg.codigo;
-	cout<<"descripcion:";	
-	do{
-		getline(cin, reg.descripcion);
-	}while(reg.descripcion.length() == 0);
-	cout<<"marca:";	
-	do{
-		getline(cin,reg.marca);
-	}while(reg.marca.length() == 0);
+struct partituras datos;
 
-	cout<<"cantidad:";
-	cin>>reg.cantidad;
+FILE*ptr;
+void LOGIN();
+void instrumento();
+void ALTA_DIRECTA();
+void CONSULTA_DIRECTA();
+void MODIFICACION_DIRECTA();
+void BAJA_LOGICA_DIRECTA(); 
+void LISTADO_SECUENCIAL(); 
+void PALTA_DIRECTA(); 
+void PCONSULTA_DIRECTA();
+void PMODIFICACION_DIRECTA();
+void PBAJA_LOGICA_DIRECTA(); 
+void PLISTADO_SECUENCIAL(); 
+void menuprincipal();
+void menupartiduras();
 
-	cout<<"lugar:";	
+
+void main()
+{
+
+system("color 69");
+	string usuario;
+	string password;
+	int contador = 0;
+	bool ingresa = false;
+
 	do{
-		getline(cin, reg.lugar);
-		}while(reg.lugar.length() == 0);
-     system("cls");
-}
-void mostrarRegistro(instrumento &reg, int nroreg)
-{
-	cout<<endl<< nroreg<<"\t"<< reg.nombre<< "\t  "<<reg.codigo<< "\t "<< reg.descripcion<<"\t"<<reg.marca<<"\t"<<reg.cantidad<<"\t "<<reg.lugar;
-}
-void adicionarRegistro()
-{
-	FILE *ptr;
-	instrumento reg;
-	solicitarDatos(reg);
-	reg.estado='A';
-	ptr= fopen("instrumento.dat", "ab"); 
-	fwrite(&reg, sizeof(reg),1,ptr);
-	fclose(ptr);
-}
-void listarArchivo()
-{
-	FILE *ptr;
-	instrumento reg;
-	int con=0;
-	ptr= fopen("instrumento.dat","rb");
-	if(ptr == NULL)
-	{
-		cout<< "EL archivo no existe...";
-	}
-	else
-	{
-		cout<<endl<<"   ** LISTADO DE INSTRUMENTOS **";
-		cout<<endl<<" N   Nombre      codigo      descripcion        marca      cantidad     lugar";
-		cout<<endl<<"---------------------------------------------------------------------------";
-		fread(&reg,sizeof(reg),1,ptr);
-		while(!feof(ptr))
-		{
-			if(reg.estado=='A')
-			{
-				mostrarRegistro(reg,con+1);
-			}
-			fread(&reg,sizeof(reg),1,ptr);
-			con++;
+		system("cls");
+		cout<<"LOGIN DE USUARIO:"<<endl;
+		cout<<"A CONTINUACION DEBERA INGRESAR EL USUARIO Y PASSWORD:"<<endl;
+		cout<<"--------------------------------"<<endl;
+		cout<<"--------------------------------"<<endl;
+		cout<<"INGRESE EL USUARIO:";
+		getline(cin, usuario);
+		cout<<"INGRESE EL PASSWORD:";
+		getline(cin,password);
+
+		if((usuario==USSER )&& (password==PASS)){
+
+			ingresa= true;
+		}else{
+			cout<<" EL USUARIO Y PASSWORD SON INVALIDOS:"<<endl;
+			cin.get();
+			contador++;
+
 		}
-		fclose(ptr);
-	}
-}
-void buscarinstrumento(int nroreg)
-{
-	FILE *ptr;
-	instrumento reg;
-	ptr=fopen("instrumento.dat","rb");
-	if(ptr== NULL)
+	}while(ingresa== false && contador < 3 );
+
+	if(ingresa==false)
 	{
-		cout<< "El archivo no existe...";
-	}
-	else
-	{
-		fseek(ptr,(nroreg-1)*sizeof(reg),SEEK_SET);
-		fread(&reg,sizeof(reg),1,ptr);
-		if(feof(ptr))
-		{
-			cout<<endl<< "Registro no existe";
-		}
-		else{
-			if(reg.estado=='A'){
-		cout<<endl<<"   ** LISTADO DE INSTRUMENTOS **";
-		cout<<endl<<" N   Nombre      codigo      descripcion      marca    cantidad     lugar";
-		cout<<endl<<"---------------------------------------------------------------------------";
-		mostrarRegistro(reg,nroreg);}
-			else{
-				cout<<endl<< "Registro eliminado...";
-			    }
-		    }
-	}fclose(ptr);
+		cout<<"usted no pudo ingresar al sistema:"<<endl;
+	}else{
 	
-}
-void modificarinstrumento(int nroreg)
-{
-	FILE *ptr;
-	instrumento reg;
-	char resp;
-	ptr=fopen("instrumento.dat","r+b");
-	if(ptr== NULL)
-	{
-		cout<< "El archivo no existe...";
+		cout<<"bienvenido al sistema"<<endl<<usuario<<endl<<"usted ingresara al menu principal:"<<endl;
+		menuprincipal();
 	}
-	else
-	{
-		fseek(ptr,(nroreg-1)*sizeof(reg),SEEK_SET);
-		fread(&reg,sizeof(reg),1,ptr);
-		if(feof(ptr))
-		{
-			cout<<endl<< "Registro no existe"<<endl;
-		}
-		else
-		{
-			if(reg.estado=='A')
-			{
-		cout<<endl<<"   ** LISTADO DE INSTRUMENTOS **";
-		cout<<endl<<" N   Nombre      codigo      descripcion      marca    cantidad     lugar";
-		cout<<endl<<"---------------------------------------------------------------------------";
-		mostrarRegistro(reg,nroreg);
-		cout<<"desea modificar? (y)es:";
-		cin>>resp;
-		if(resp=='y')
-		{
-		solicitarDatos(reg);
-		reg.estado='A';
-		fseek(ptr,(nroreg-1)*sizeof(reg),SEEK_SET);
-		fwrite(&reg,sizeof(reg),1,ptr);
-		}
-		else
-		{
-			cout<<"regsitro no modificado"<<endl;
-		}
-		fclose(ptr);
-            }
-		 }
-	}
-}
-void eliminarinstrumento(int nroreg)
-{
-	FILE *ptr;
-	instrumento reg;
-	char resp;
-	ptr=fopen("instrumento.dat","r+b");
-	if(ptr== NULL)
-	{
-		cout<< "El archivo no existe...";
-	}
-	else
-	{
-		fseek(ptr,(long)(nroreg-1)*sizeof(reg),0);
-		fread(&reg,sizeof(reg),1,ptr);
-		if(feof(ptr))
-		{
-			cout<<endl<< "Registro no existe"<<endl;
-		}
-		else
-		{
-			if(reg.estado=='A')
-			{
-		cout<<endl<<"   ** LISTADO DE INSTRUMENTOS **";
-		cout<<endl<<" N   Nombre      codigo      descripcion      marca    cantidad     lugar";
-		cout<<endl<<"---------------------------------------------------------------------------";
-		mostrarRegistro(reg,nroreg);
-		cout<<"desea eliminar a "<<reg.nombre<<"? (y)es:";
-		cin>>resp;
-		if(resp=='y'){
-		reg.estado='E';
-		fseek(ptr,(long)(nroreg-1)*sizeof(reg),0);
-		fwrite(&reg,sizeof(reg),1,ptr);
-		cout<<""<<reg.nombre<<" a sido eliminada"<<endl;
-		getch();
-		}
-		else
-		{
-			cout<<"regsitro no eliminado"<<endl;
-		}
-		fclose(ptr);
-            }
-		 }
-	}
-}
-void menuistrumento()
-{
-	int opcion,m,m2,m3;
 	
+	getch();
+}
+
+void menuprincipal()
+{
+	system("cls");
+	system("color 0B");
+	int opcion;
+	do{
+	cout<<"\t\t ****MENU*****"<<endl;
+	cout<<"******************************************"<<endl;
+	cout<<"\t 1.INSTRUMENTO"<<endl;
+	cout<<"\t 2.PARTITURAS"<<endl;
+	cout<<"\t 3.VOLVER ATRAS"<<endl;
+	cout<<"\t 0.salir del programa"<<endl;
+	cout<<"\t opcion:";
+	cin>>opcion;
+	system("cls");
+	switch(opcion)
+	{
+	case 1:
+		instrumento();
+		break;
+	case 2:
+		menupartiduras();
+		break;
+	case 3:
+		//menu usuario();
+		break;
+	case 0:
+		cout<<"\t\n saliendo del programa";
+		break;
+	default:
+		cout<<"\t opcion invalida";
+		break;
+	}
+	}while(opcion!=0);
+	system("cls");
+   getch();
+}
+
+
+void instrumento()
+{
+	system("cls");
+	system("color 7D");
+	int opcion;
 	do{
 	cout<<"\t\t INVENTARIO DE INSTRUMENTOS DE ORQUESTA"<<endl;
-	cout<<"\t 1.Crear archivo"<<endl;
-	cout<<"\t 2.Adicionar instrumento"<<endl;
-	cout<<"\t 3.Buscar instrumento"<<endl;
-	cout<<"\t 4.mostrar lista de instrumento"<<endl;
-	cout<<"\t 5.modificar instrumento"<<endl;
-	cout<<"\t 6.Eliminar instrumento"<<endl;
-	cout<<"\t 7.volver a menu"<<endl;
+	cout<<"\t 1.CREAR ARCHIVO"<<endl;
+	cout<<"\t 2.ALTAS DIRECTAS"<<endl;
+	cout<<"\t 3.CONSULTAS DIRECTAS"<<endl;
+	cout<<"\t 4.MODIFICACION DIRECTA"<<endl;
+	cout<<"\t 5.BAJAS LOGICAS DIRECTAS"<<endl;
+	cout<<"\t 6.LISTADO SECUENCIAL"<<endl;
 	cout<<"\t 0.Salir"<<endl;
 	cout<<"\t opcion: ";
 	cin>>opcion;
@@ -235,43 +149,25 @@ void menuistrumento()
 	switch(opcion)
 	{
 	case 1:
-		crearArchivo("instrumento.dat");
-		cout<<"--EL ARCHIVO FUE CREADO--"<<endl;
-		getch();
+		ptr=fopen("inventario.dat","wb");
+		cout<<"\nEl archivo fue creado \n\n";
+		system("pause");
 		system("cls");
-        break;
+		break;
 	case 2:
-		cout<<"Ingrese datos";
-		listarArchivo();
-		adicionarRegistro();
-		getch();
-		system("cls");
+		ALTA_DIRECTA();
 		break;
 	case 3:
-		cout<<"registro a buscar:";
-		cin>>m;
-		buscarinstrumento(m);
-		getch();
-		system("cls");
+		CONSULTA_DIRECTA();
 		break;
 	case 4:
-		listarArchivo();
-		getch();
-		system("cls");
+		MODIFICACION_DIRECTA();
 		break;
 	case 5:
-        cout<<"registro a modificar:";
-		cin>>m2;
-		modificarinstrumento(m2);
-		getch();
-		system("cls");
+		BAJA_LOGICA_DIRECTA();
 		break;
 	case 6:
-		cout<<"registro a eliminar:";
-		cin>>m3;
-		eliminarinstrumento(m3);
-		getch();
-		system("cls");
+        LISTADO_SECUENCIAL();
 		break;
 	case 0:
 		cout<<"\t saliendo del programa";
@@ -281,8 +177,221 @@ void menuistrumento()
 		break;
 	}
 	}while(opcion!=0);
-
+	system("cls");
+	getch();
 }
+
+void ALTA_DIRECTA()
+{
+  int codigo;
+  ptr=fopen("inventario.dat","ab+");
+ cout<<"ingrese codigo:";
+ cin>>codigo;
+ dir_fisica=codigo*sizeof(registro); // Calculo de la dir. fisica
+  fseek(ptr,dir_fisica,SEEK_SET); //Posicionar el apuntador del archivo
+  fread(&registro,sizeof(registro),1,ptr);
+     // Lee el "Registro", de tamano=sizeof(Registro) del archivo "alias"
+  if(registro.codigo==codigo)
+  {
+       cout << "\n\n\n\rRegistro duplicado !!!";
+       fclose(ptr);
+       getch();
+       return;
+  }
+ cout<<endl<< "introducir Nombre:";
+do{
+	getline(cin, registro.nombre);
+  }while(registro.nombre.length() == 0);
+	cout<< "descripcion:";	
+	do{
+	getline(cin, registro.descripcion);
+	}while(registro.descripcion.length() == 0);
+	cout<<"marca:";
+	do{
+		getline(cin,registro.marca);
+   }while(registro.marca.length() == 0);
+	cout<<"cantidad:";
+	cin>>registro.cantidad;
+	cout<<"lugar:";
+	do{
+		getline(cin, registro.lugar);
+	}while(registro.lugar.length() == 0);
+	registro.codigo=codigo;
+	registro.estado='A';
+    fwrite(&registro,sizeof(registro),1,ptr); // Grabar el Registro completo
+    fclose(ptr); // Cierra el archivo
+	cout << "\n\r<<< Oprima cualquier tecla para continuar >>>"<<endl;
+	system("cls");
+}
+
+void CONSULTA_DIRECTA()
+{
+  int codigo;  
+  cout << "\n\rCONSULTA DE REGISTROS DE PRODUCTOS";
+   ptr=fopen("inventario.dat","rb"); // Intenta abrir el archivo PRODUCTO.DIR
+				     // en modo de solo lectura
+  if(ptr==NULL)
+  {
+    cout << "\n\n\n\rNo existe el archivo !!!";
+    cout << "\n\r<<< Oprima cualquier tecla para continuar >>>";
+    }
+  else{
+	   cout << "\n\n\n\rINTRODUZCA EL CODIGO DEL INSTRUMENTO: ";
+  cin >> codigo;
+	  dir_fisica=codigo*sizeof(registro); // Calculo de la dir. fisica
+    fseek(ptr,dir_fisica,SEEK_SET); //Posicionar el apuntador del archivo
+    fread(&registro,sizeof(registro),1,ptr);
+    if(registro.codigo==codigo)
+  {
+	   cout << "\n\rNOMBRE            CODIGO        DESCRIPCION         MARCA        CANTIDAD              LUGAR           ";
+  cout << "\n\r-------------------------------------------------------------------------------------------------------------------------------";
+  cout<<endl<<"      "<<registro.nombre<<"      "<<registro.codigo<<"      "<<registro.descripcion<<"      "<<registro.marca<<"      "<<registro.cantidad<<"      "<<registro.lugar;
+    
+  }
+  else
+  {
+    cout << "\n\n\n\rNo existe ese registro !!!";
+  }
+  cout << "\n\n\n\n\r<<< Oprima cualquier tecla para continuar >>>";
+ getch();
+ }fclose(ptr);
+  system("cls");
+}
+void LISTADO_SECUENCIAL()
+{
+  cout << "\n\rLISTADO DE REGISTROS DE PRODUCTOS";
+  ptr=fopen("inventario.dat","rb+"); // Intenta abrir el archivo PRODUCTO.DIR
+				     // en modo de solo lectura
+  if(ptr==NULL)
+  {
+    cout << "\n\n\n\rNo existe el archivo !!!";
+    cout << "\n\r<<< Oprima cualquier tecla para continuar >>>";
+  }
+  else
+  {
+   cout<<"\n\rNOMBRE     CODIGO      DESCRIPCION      MARCA        CANTIDAD       LUGAR        ";
+  cout<<"\n\r----------------------------------------------------------------------------------------";
+  while((fread(&registro,sizeof(registro),1,ptr))==1)
+  {
+    cout<<endl<<"      "<<registro.nombre<<"      "<<registro.codigo<<"      "<<registro.descripcion<<"      "<<registro.marca<<"      "<<registro.cantidad<<"      "<<registro.lugar;
+  };
+  cout << "\n\r----------------------------------------------------------------------------------------";
+  cout << "\n\rFin del listado !!!";
+  cout << "\n\r<<< Oprima cualquier tecla para continuar >>>";
+  getch();
+}fclose(ptr);
+  system("cls");
+}
+
+void MODIFICACION_DIRECTA()
+{
+  int codigo;
+  cout << "\n\rMODIFICACION DE REGISTROS DE PRODUCTOS";
+  ptr=fopen("inventario.dat","r+b"); // Intenta abrir el archivo PRODUCTO.DIR
+			     // en modo de lectura/escritura
+  if(ptr==NULL)  // Valida la existencia del archivo
+  {
+    cout << "\n\n\n\rNo existe el archivo !!!";
+    cout << "\n\r<<< Oprima cualquier tecla para continuar >>>";
+    getch();
+  }
+
+  cout << "\n\n\n\ringrese el codigo: ";
+  cin >> codigo;
+
+  dir_fisica=codigo*sizeof(registro); // Calculo de la dir. fisica
+  fseek(ptr,dir_fisica,SEEK_SET); //Posicionar el apuntador del archivo
+  fread(&registro,sizeof(registro),1,ptr);
+     // Lee el "Registro", de tamano=sizeof(Registro) del archivo "alias"
+  if(registro.codigo==codigo)
+  {
+      cout << "\n\rNOMBRE            CODIGO        DESCRIPCION         MARCA        CANTIDAD              LUGAR           ESTADO";
+      cout << "\n\r-------------------------------------------------------------------------------------------------------------------------------";
+      cout<<endl<<"      "<<registro.nombre<<"      "<<registro.codigo<<"      "<<registro.descripcion<<"      "<<registro.marca<<"      "<<registro.cantidad<<"      "<<registro.lugar<<"      "<<registro.estado;
+
+      cout << "\n\n\n\rModifique los nuevos datos ...";
+      cout<<endl<< "introducir Nombre:";
+do{
+	getline(cin, registro.nombre);
+  }while(registro.nombre.length() == 0);
+	cout<< "descripcion:";	
+	do{
+	getline(cin, registro.descripcion);
+	}while(registro.descripcion.length() == 0);
+	cout<<"marca:";
+	do{
+		getline(cin,registro.marca);
+   }while(registro.marca.length() == 0);
+	cout<<"cantidad:";
+	cin>>registro.cantidad;
+	cout<<"lugar:";
+	do{
+		getline(cin, registro.lugar);
+	}while(registro.lugar.length() == 0);
+      fseek(ptr,dir_fisica,SEEK_SET); //Posicionar el apuntador del archivo
+      fwrite(&registro,sizeof(registro),1,ptr);  // Graba el registro con
+						   // los nuevos campos
+      fclose(ptr);   // Cierra el archivo
+      cout << "\n\n\n\rRegistro modificado !!!";
+      cout << "\n\r<<< Oprima cualquier tecla para continuar >>>";
+      getch();
+  }
+  else
+  {
+   cout << "\n\n\n\rNo se encuentra ese registro !!!";
+  }
+  fclose(ptr); // Cierra el archivo
+  cout << "\n\n\n\n\r<<< Oprima cualquier tecla para continuar >>>";
+  system("cls");
+  getch();
+ 
+}
+
+void BAJA_LOGICA_DIRECTA(void)
+{
+  int codigo; // Variable local para el numero de producto que desea eliminar
+  char op;
+  cout << "\n\rBAJA LOGICA DE REGISTROS DE PRODUCTOS";
+  ptr=fopen("inventario.dat","r+b"); // Intenta abrir el archivo PRODUCTO.DIR
+				     // en modo de lectura/escritura
+  if(ptr==NULL)  // Valida la existencia del archivo
+  {
+    cout << "\n\n\n\rNo existe el archivo !!!";
+    cout << "\n\r<<< Oprima cualquier tecla para continuar >>>";
+    getch();
+    return;
+  }
+  else{
+  cout << "\n\n\n\ringrese el codigo: "; 
+  cin >> codigo;
+  dir_fisica=codigo*sizeof(registro); // Calculo de la dir. fisica
+  fseek(ptr,dir_fisica,SEEK_SET); //Posicionar el apuntador del archivo
+  fread(&registro,sizeof(registro),1,ptr);
+     // Lee el "Registro", de tamano=sizeof(Registro) del archivo "alias"
+  if(registro.codigo==codigo)
+  {
+        cout<<endl<<"   ** LISTADO DE INSTRUMENTOS **";
+		cout<<endl<<" N   Nombre      codigo      descripcion      marca    cantidad     lugar";
+		cout<<endl<<"---------------------------------------------------------------------------";
+		cout<<endl<<"      "<<registro.nombre<<"      "<<registro.codigo<<"      "<<registro.descripcion<<"      "<<registro.marca<<"      "<<registro.cantidad<<"      "<<registro.lugar<<"      "<<registro.estado;
+		cout<<"desea eliminar a "<<registro.nombre<<"? (y)es:";
+		cin>>op;
+		if(op=='y'){
+		registro.estado='E';
+		fseek(ptr,(long)(codigo-1)*sizeof(registro),0);
+		fwrite(&registro,sizeof(registro),1,ptr);
+		cout<<"     "<<registro.nombre<<" a sido eliminada"<<endl;
+		getch();
+		}
+		else
+		{
+			cout<<"regsitro no eliminado"<<endl;
+		}
+  }
+		fclose(ptr);
+            }
+}	 
+	
 void datospartidura(partituras &dat) 
 {	
 	cout<<endl<< "Nombre:";
@@ -459,6 +568,8 @@ void eliminarpartitura(int nroReg)
 }
 void menupartiduras()
 {
+	system("cls");
+	system("color 3D");
 	int opcion,n,n2,n3;
 	
 	do{
@@ -477,7 +588,6 @@ void menupartiduras()
 	switch(opcion)
 	{
 	case 1:
-		crearArchivo("partidura.dat");
 		cout<<"\n --EL ARCHIVO FUE CREADO--"<<endl;
 		system("pause");
 		system("cls");
@@ -523,37 +633,3 @@ void menupartiduras()
 	getch();
 
 }
-void main()
-{
-	int opcion;
-	do{
-	cout<<"\t\t ****MENU*****"<<endl;
-	cout<<"\t 1.INSTRUMENTO"<<endl;
-	cout<<"\t 2.PARTIDURAS"<<endl;
-	cout<<"\t 3.VOLVER ATRAS"<<endl;
-	cout<<"\t 0.salir del programa"<<endl;
-	cout<<"\t opcion:";
-	cin>>opcion;
-	system("cls");
-	switch(opcion)
-	{
-	case 1:
-		menuistrumento();
-		break;
-	case 2:
-		menupartiduras();
-		break;
-	case 3:
-		//menu usuario();
-		break;
-	case 0:
-		cout<<"\t\n saliendo del programa";
-		break;
-	default:
-		cout<<"\t opcion invalida";
-		break;
-	}
-	}while(opcion!=0);
-   getch();
-}
-
